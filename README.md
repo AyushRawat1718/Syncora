@@ -73,3 +73,15 @@ Built using **Next.js**, **PostgreSQL**, and **FullCalendar**, it allows users t
 ## Screenshots
 
 ![image alt](https://github.com/AyushRawat1718/Syncora/blob/master/frontend/public/Screenshots/SS_1.png)
+
+![image alt](https://github.com/AyushRawat1718/Syncora/blob/master/frontend/public/Screenshots/SS_2.png)
+
+![image alt](https://github.com/AyushRawat1718/Syncora/blob/master/frontend/public/Screenshots/SS_3.png)
+
+---
+
+## ✨ Credits
+
+- Developed by **Ayush Rawat**
+
+- Inspired by Google Calendar — built for simplicity, clarity, and performance.

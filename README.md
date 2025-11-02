@@ -1,49 +1,75 @@
-# 🗓️ Syncora — Smart Event Scheduler
+# 🗓️ Syncora — Smart Event Scheduling Platform
 
-**Syncora** is a modern, full-stack event scheduling web app inspired by Google Calendar.  
-It allows users to **create, manage, and visualize events** with intuitive filtering, color categorization, and upcoming reminders.
+**Syncora** is a modern, fully interactive event scheduling platform inspired by _Google Calendar_.  
+Built using **Next.js**, **PostgreSQL**, and **FullCalendar**, it allows users to seamlessly create, edit, and delete events with real-time updates and persistent storage.
 
 ---
 
 ## 🚀 Tech Stack
 
-### 🧠 Backend
-
-- **Express.js** — REST API server
-- **Prisma ORM** — Database management
-- **PostgreSQL** — Persistent event storage
-
 ### 💻 Frontend
 
-- **Next.js 16 (App Router)** — Frontend framework
-- **FullCalendar** — Interactive calendar UI
-- **TypeScript + TailwindCSS** — Clean and responsive styling
-- **Axios** — API communication
+- **Next.js 16 (App Router)** — Modern React framework for building the UI
+- **FullCalendar** — Interactive and dynamic calendar view
+- **TypeScript + TailwindCSS** — Clean, responsive, and maintainable styling
+- **Axios** — Handles API requests between frontend and backend
+
+### 🧠 Backend
+
+- **Express.js** — RESTful API server
+- **Prisma ORM** — Simplified database management and schema migrations
+- **PostgreSQL** — Persistent data storage for events
 
 ---
 
-## ⚙️ Features
+## ⚙️ Core Features
 
-✅ **Create Events**
+### ✅ Create, Edit, and Delete Events
 
-- Add meetings, tasks, or reminders easily
-- Choose title, time, and color-coded category
+- Easily add, modify, or remove events using an intuitive modal interface
+- Choose event **title**, **description**, **category**, **color**, and **time range**
 
-✅ **Dynamic Calendar View**
+### ✅ Interactive Calendar View
 
-- Switch between **Month**, **Week**, and **Day** modes
-- View all events in an organized grid
+- Built using **FullCalendar** with **Month**, **Week**, and **Day** modes
+- Click or drag to create events directly on the calendar grid
 
-✅ **Upcoming Events Section**
+### ✅ Upcoming Events Sidebar
 
-- Automatically lists next 3 days of events in the sidebar
+- Displays **next 3 days** of upcoming events
+- Click any listed event to edit it instantly
 
-✅ **Event Filtering**
+### ✅ Event Filtering
 
-- Filter events by type (Meeting / Task / Reminder)
+- Filter events by category: **Meeting**, **Task**, or **Reminder**
+- Toggle categories dynamically without reloading the page
 
-✅ **Responsive Design**
+### ✅ Modern & Responsive UI
 
-- Works seamlessly across screen sizes
+- Sleek, minimal design powered by TailwindCSS
+- Sidebar with quick access to filters and upcoming events
+- Header greeting: _“Hey 👋 Stay organized with Syncora”_
 
 ---
+
+## 🧾 Database Integration
+
+- All event data is stored persistently in **PostgreSQL** via **Prisma ORM**
+- Events table includes fields for:
+  - `id`, `title`, `description`, `category`
+  - `startTime`, `endTime`, `color`, and `allDay`
+
+---
+
+## 📸 Demo Workflow
+
+1. Launch the app (`npm run dev`)
+2. View your calendar in month/week/day format
+3. Add or edit events directly from the calendar or sidebar
+4. Check your PostgreSQL database to verify persisted events
+
+---
+
+## Screenshots
+
+![image alt](https://github.com/AyushRawat1718/Syncora/blob/master/frontend/public/Screenshots/SS_1.png)

@@ -12,7 +12,7 @@ model Event {
   title          String
   description    String?          // short details about the event
   eventType      String           // Meeting, Class, Appointment, etc.
-  category       String           @default("Meeting") // 🆕 Meeting | Task | Reminder
+  category       String           @default("Meeting") // Meeting | Task | Reminder
   startTime      DateTime
   endTime        DateTime
   allDay         Boolean  @default(false)

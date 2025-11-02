@@ -85,3 +85,5 @@ Built using **Next.js**, **PostgreSQL**, and **FullCalendar**, it allows users t
 - Developed by **Ayush Rawat**
 
 - Inspired by Google Calendar — built for simplicity, clarity, and performance.
+
+Info about installation, project structure, env info in backend - > 

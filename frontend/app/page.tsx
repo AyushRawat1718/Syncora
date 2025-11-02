@@ -267,9 +267,17 @@ export default function CalendarPage() {
               allDay: e.allDay,
               backgroundColor: e.color,
               borderColor: e.color,
+              textColor: "#ffffff",
             }))}
+            eventTimeFormat={{
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            }}
+            displayEventTime={false}
+            eventDisplay="block" // ✅ fixes color issue in month view
             height="85vh"
-          />
+          />g
         </div>
       </section>
 

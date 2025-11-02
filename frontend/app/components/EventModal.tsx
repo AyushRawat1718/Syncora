@@ -17,7 +17,7 @@ interface EventModalProps {
   selectedDate?: string;
   selectedStartISO?: string;
   selectedEndISO?: string;
-  eventToEdit?: any | null; // new prop for editing
+  eventToEdit?: any | null;
 }
 
 export default function EventModal({
@@ -40,14 +40,12 @@ export default function EventModal({
     endTime: "",
   });
 
-  // map event type to colors
   const eventColors: Record<string, string> = {
     Meeting: "#3A87AD",
     Task: "#2ECC71",
     Reminder: "#F39C12",
   };
 
-  // Prefill data
   useEffect(() => {
     if (isEditMode && eventToEdit) {
       const start = new Date(eventToEdit.startTime);
@@ -61,7 +59,6 @@ export default function EventModal({
         endTime: end.toISOString().substring(11, 16),
       });
     } else if (selectedDate || selectedStartISO) {
-      // prefill from clicked slot (day/week view)
       const startDate = selectedDate || selectedStartISO?.split("T")[0] || "";
       const startTime =
         selectedStartISO?.split("T")[1]?.substring(0, 5) || "09:00";
@@ -91,7 +88,7 @@ export default function EventModal({
     const color = eventColors[eventType] || "#3A87AD";
 
     onSubmit({
-      ...eventToEdit, // include id if editing
+      ...eventToEdit,
       title,
       description,
       eventType,
@@ -105,7 +102,7 @@ export default function EventModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md rounded-2xl">
+      <DialogContent className="max-w-md rounded-2xl transition-all duration-300 ease-in-out">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-blue-600">
             {isEditMode ? "Edit Event" : "Add New Event"}

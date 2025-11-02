@@ -51,7 +51,6 @@ export default function CalendarPage() {
       };
 
       if (formData.id) {
-        // update
         const res = await axios.put(
           `${API_BASE}/events/${formData.id}`,
           payload
@@ -60,7 +59,6 @@ export default function CalendarPage() {
           prev.map((ev) => (ev.id === formData.id ? res.data : ev))
         );
       } else {
-        // create
         const res = await axios.post(`${API_BASE}/events`, payload);
         setEvents((prev) => [...prev, res.data]);
       }
@@ -80,7 +78,7 @@ export default function CalendarPage() {
     }
   };
 
-  // ✅ Handle selecting time slot (for creation)
+  // ✅ Handle selecting time slot
   const handleDateSelect = (selectInfo: any) => {
     setSelectedStartISO(selectInfo.startStr);
     setSelectedEndISO(selectInfo.endStr ?? selectInfo.startStr);
@@ -90,7 +88,7 @@ export default function CalendarPage() {
     setIsModalOpen(true);
   };
 
-  // ✅ Handle clicking on existing event (for editing)
+  // ✅ Handle clicking on existing event
   const handleEventClick = (clickInfo: any) => {
     const clickedId = clickInfo.event.id;
     const ev = events.find((e) => String(e.id) === String(clickedId));
@@ -100,7 +98,7 @@ export default function CalendarPage() {
     }
   };
 
-  // ✅ Filter by category
+  // ✅ Filter toggle
   const handleFilterChange = (type: string) => {
     setFilters((prev) => ({
       ...prev,
@@ -132,11 +130,23 @@ export default function CalendarPage() {
       .slice(0, 5);
   }, [events]);
 
+  // ✅ Convert date to Indian format (DD/MM/YYYY)
+  const toIndianDate = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   return (
     <main className="min-h-screen bg-[#f1f3f4] flex">
       {/* Sidebar */}
       <aside className="w-72 bg-white border-r border-gray-200 p-6 hidden md:flex flex-col gap-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-[#1a73e8]">Syncora</h1>
+        <h1 className="text-3xl font-bold text-[#1a73e8] tracking-tight">
+          Syncora
+        </h1>
 
         {/* Add Event Button */}
         <button
@@ -172,7 +182,7 @@ export default function CalendarPage() {
                   <div className="truncate">
                     <div className="font-medium text-sm">{e.title}</div>
                     <div className="text-xs text-gray-500">
-                      {new Date(e.startTime).toLocaleString()}
+                      {toIndianDate(e.startTime)}
                     </div>
                   </div>
                 </li>
@@ -214,6 +224,11 @@ export default function CalendarPage() {
 
       {/* Calendar Section */}
       <section className="flex-1 p-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold text-gray-700">My Calendar</h2>
+          <p className="text-m text-gray-500">Stay organized with Syncora</p>
+        </div>
+
         <div className="bg-white p-4 rounded-2xl shadow-md">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -241,7 +256,7 @@ export default function CalendarPage() {
         </div>
       </section>
 
-      {/* Create/Edit Event Modal */}
+      {/* Event Modal */}
       <EventModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -1,0 +1,23 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Event {
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String?          // short details about the event
+  eventType      String           // Meeting, Class, Appointment, etc.
+  startTime      DateTime
+  endTime        DateTime
+  allDay         Boolean  @default(false)
+  color          String?  @default("#3a87ad")
+  recurrenceRule String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+

@@ -80,7 +80,7 @@ Built using **Next.js**, **PostgreSQL**, and **FullCalendar**, it allows users t
 
 ---
 
-##📦 Installation & Setup
+## 📦 Installation & Setup
 
 ### 1️⃣ Clone the Repository
 

@@ -84,7 +84,6 @@ export default function EventModal({
 
     const startISO = new Date(`${date}T${startTime}`).toISOString();
     const endISO = new Date(`${date}T${endTime}`).toISOString();
-
     const color = eventColors[eventType] || "#3A87AD";
 
     onSubmit({
@@ -98,6 +97,17 @@ export default function EventModal({
     });
 
     onClose();
+  };
+
+  const handleDelete = () => {
+    if (
+      confirm(
+        "Are you sure you want to delete this event? This action cannot be undone."
+      )
+    ) {
+      onSubmit({ ...eventToEdit, _delete: true });
+      onClose();
+    }
   };
 
   return (
@@ -188,15 +198,26 @@ export default function EventModal({
           </div>
         </div>
 
-        <DialogFooter className="mt-6 flex justify-end gap-3">
-          <Button variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white hover:bg-blue-700">
-            {isEditMode ? "Save Changes" : "Save Event"}
-          </Button>
+        <DialogFooter className="mt-6 flex justify-between items-center">
+          {isEditMode && (
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              className="bg-red-600 text-white hover:bg-red-700">
+              Delete
+            </Button>
+          )}
+
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              className="bg-blue-600 text-white hover:bg-blue-700">
+              {isEditMode ? "Save Changes" : "Save Event"}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

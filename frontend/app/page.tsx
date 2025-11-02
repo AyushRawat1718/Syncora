@@ -1,18 +1,17 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
-
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import EventModal from "./components/EventModal";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+import { api } from "@/lib/utils"; // ✅ correct Next.js import alias
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export default function CalendarPage() {
   const [events, setEvents] = useState<any[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedStartISO, setSelectedStartISO] = useState<string | null>(null);
@@ -24,11 +23,15 @@ export default function CalendarPage() {
     Reminder: true,
   });
 
-  // ✅ Fetch all events
+  // ✅ Fetch all events + upcoming events
   const fetchEvents = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/events`);
-      setEvents(res.data);
+      const [all, upcoming] = await Promise.all([
+        api.getEvents(),
+        api.getUpcomingEvents().catch(() => ({ data: [] })), // fallback if not implemented
+      ]);
+      setEvents(all.data);
+      setUpcomingEvents(upcoming.data || []);
     } catch (err) {
       console.error("Error fetching events:", err);
     }
@@ -53,17 +56,15 @@ export default function CalendarPage() {
       };
 
       if (formData.id) {
-        const res = await axios.put(
-          `${API_BASE}/events/${formData.id}`,
-          payload
-        );
+        const res = await api.updateEvent(formData.id, payload);
         setEvents((prev) =>
           prev.map((ev) => (ev.id === formData.id ? res.data : ev))
         );
       } else {
-        const res = await axios.post(`${API_BASE}/events`, payload);
+        const res = await api.createEvent(payload);
         setEvents((prev) => [...prev, res.data]);
       }
+      fetchEvents();
     } catch (error) {
       console.error("Error saving event:", error);
     }
@@ -72,11 +73,21 @@ export default function CalendarPage() {
   // ✅ Delete event
   const handleDeleteEvent = async (id: string) => {
     try {
-      await axios.delete(`${API_BASE}/events/${id}`);
-      setEvents((prev) => prev.filter((ev) => ev.id !== id));
+      console.log("→ Sending DELETE to:", `${BASE_URL}/events/${id}`);
+      const res = await api.deleteEvent(id);
+      console.log("← DELETE response:", res.status, res.data);
+      // refresh from server (safer)
+      await fetchEvents();
       setSelectedEvent(null);
-    } catch (error) {
-      console.error("Error deleting event:", error);
+    } catch (error: any) {
+      console.error(
+        "Error deleting event (frontend):",
+        error?.response?.data || error.message
+      );
+      alert(
+        "Delete failed: " +
+          (error?.response?.data?.error || error?.message || "Unknown error")
+      );
     }
   };
 
@@ -114,24 +125,6 @@ export default function CalendarPage() {
     [events, filters]
   );
 
-  // ✅ Upcoming events (next 3 days)
-  const upcomingEvents = useMemo(() => {
-    const now = new Date();
-    const threeDaysLater = new Date();
-    threeDaysLater.setDate(now.getDate() + 3);
-
-    return [...events]
-      .filter((e) => {
-        const s = new Date(e.startTime);
-        return s >= now && s <= threeDaysLater;
-      })
-      .sort(
-        (a, b) =>
-          new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-      )
-      .slice(0, 5);
-  }, [events]);
-
   // ✅ Convert date to Indian format (DD/MM/YYYY)
   const toIndianDate = (isoString: string) => {
     const date = new Date(isoString);
@@ -165,7 +158,7 @@ export default function CalendarPage() {
 
         {/* Upcoming Events */}
         <div className="text-sm mt-6">
-          <p className="text-gray-500 font-medium">Upcoming Events (3 Days)</p>
+          <p className="text-gray-500 font-medium">Upcoming Events</p>
           <hr className="my-2" />
           {upcomingEvents.length > 0 ? (
             <ul className="space-y-2">
@@ -275,9 +268,9 @@ export default function CalendarPage() {
               hour12: false,
             }}
             displayEventTime={false}
-            eventDisplay="block" // ✅ fixes color issue in month view
+            eventDisplay="block"
             height="85vh"
-          />g
+          />
         </div>
       </section>
 
@@ -285,18 +278,13 @@ export default function CalendarPage() {
       <EventModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={async (data: any) => {
-          await handleSubmitEvent(data);
-          fetchEvents();
-          setIsModalOpen(false);
-        }}
+        onSubmit={handleSubmitEvent}
         selectedDate={selectedDate}
         selectedStartISO={selectedStartISO ?? undefined}
         selectedEndISO={selectedEndISO ?? undefined}
         eventToEdit={selectedEvent}
-        onDelete={async () => {
-          if (selectedEvent?.id) await handleDeleteEvent(selectedEvent.id);
-          fetchEvents();
+        onDelete={() => {
+          if (selectedEvent?.id) handleDeleteEvent(selectedEvent.id);
         }}
       />
     </main>

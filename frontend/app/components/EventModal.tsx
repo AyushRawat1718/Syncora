@@ -15,6 +15,9 @@ interface EventModalProps {
   onClose: () => void;
   onSubmit: (formData: any) => void;
   selectedDate?: string;
+  selectedStartISO?: string;
+  selectedEndISO?: string;
+  eventToEdit?: any | null; // new prop for editing
 }
 
 export default function EventModal({
@@ -22,7 +25,12 @@ export default function EventModal({
   onClose,
   onSubmit,
   selectedDate,
+  selectedStartISO,
+  selectedEndISO,
+  eventToEdit,
 }: EventModalProps) {
+  const isEditMode = !!eventToEdit;
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -32,24 +40,47 @@ export default function EventModal({
     endTime: "",
   });
 
-  useEffect(() => {
-    if (selectedDate) {
-      setFormData((prev) => ({ ...prev, date: selectedDate }));
-    }
-  }, [selectedDate]);
-
-  // ✅ Define color mapping by event type
+  // map event type to colors
   const eventColors: Record<string, string> = {
     Meeting: "#3A87AD",
     Task: "#2ECC71",
     Reminder: "#F39C12",
   };
 
+  // Prefill data
+  useEffect(() => {
+    if (isEditMode && eventToEdit) {
+      const start = new Date(eventToEdit.startTime);
+      const end = new Date(eventToEdit.endTime);
+      setFormData({
+        title: eventToEdit.title,
+        description: eventToEdit.description || "",
+        eventType: eventToEdit.eventType || "Meeting",
+        date: start.toISOString().split("T")[0],
+        startTime: start.toISOString().substring(11, 16),
+        endTime: end.toISOString().substring(11, 16),
+      });
+    } else if (selectedDate || selectedStartISO) {
+      // prefill from clicked slot (day/week view)
+      const startDate = selectedDate || selectedStartISO?.split("T")[0] || "";
+      const startTime =
+        selectedStartISO?.split("T")[1]?.substring(0, 5) || "09:00";
+      const endTime = selectedEndISO?.split("T")[1]?.substring(0, 5) || "10:00";
+
+      setFormData((prev) => ({
+        ...prev,
+        date: startDate,
+        startTime,
+        endTime,
+      }));
+    }
+  }, [selectedDate, selectedStartISO, selectedEndISO, eventToEdit]);
+
   const handleSubmit = () => {
     const { title, description, eventType, date, startTime, endTime } =
       formData;
 
-    if (!title || !startTime || !endTime || !eventType) {
+    if (!title || !startTime || !endTime) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -60,6 +91,7 @@ export default function EventModal({
     const color = eventColors[eventType] || "#3A87AD";
 
     onSubmit({
+      ...eventToEdit, // include id if editing
       title,
       description,
       eventType,
@@ -69,14 +101,6 @@ export default function EventModal({
     });
 
     onClose();
-    setFormData({
-      title: "",
-      description: "",
-      eventType: "Meeting",
-      date: "",
-      startTime: "",
-      endTime: "",
-    });
   };
 
   return (
@@ -84,7 +108,7 @@ export default function EventModal({
       <DialogContent className="max-w-md rounded-2xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-blue-600">
-            Add New Event
+            {isEditMode ? "Edit Event" : "Add New Event"}
           </DialogTitle>
         </DialogHeader>
 
@@ -128,20 +152,18 @@ export default function EventModal({
           </div>
 
           {/* Date */}
-          {!selectedDate && (
-            <div>
-              <p className="text-sm font-medium text-gray-700 mb-1">Date</p>
-              <Input
-                type="date"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-              />
-            </div>
-          )}
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-1">Date</p>
+            <Input
+              type="date"
+              value={formData.date}
+              onChange={(e) =>
+                setFormData({ ...formData, date: e.target.value })
+              }
+            />
+          </div>
 
-          {/* Time Selection */}
+          {/* Time */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm font-medium text-gray-700 mb-1">
@@ -176,7 +198,7 @@ export default function EventModal({
           <Button
             onClick={handleSubmit}
             className="bg-blue-600 text-white hover:bg-blue-700">
-            Save Event
+            {isEditMode ? "Save Changes" : "Save Event"}
           </Button>
         </DialogFooter>
       </DialogContent>

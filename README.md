@@ -80,10 +80,95 @@ Built using **Next.js**, **PostgreSQL**, and **FullCalendar**, it allows users t
 
 ---
 
+##📦 Installation & Setup
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/AyushRawat1718/Syncora.git
+cd Syncora
+```
+
+### 2️⃣ Backend Setup
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file inside `/backend` and add:
+
+```bash
+DATABASE_URL="postgresql://<user>:<password>@localhost:5432/syncora"
+```
+
+Then run Prisma migrations and start the server:
+
+```bash
+npx prisma migrate dev --name init
+npm run dev
+```
+
+🟢 Backend runs on `http://localhost:5000`
+
+### 3️⃣ Frontend Setup
+```bash
+cd ../frontend
+npm install
+```
+
+Create a `.env` file inside `/frontend` and add:
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```
+
+Then start the frontend server:
+
+```bash
+npm run dev
+```
+
+🟢 Frontend runs on `http://localhost:3000`
+
+---
+
+## 📁 Project Structure
+The project is organized into frontend and backend directories for clarity and modularity.
+```bash
+Syncora/
+├── backend/                  # Express + Prisma + PostgreSQL backend
+│   ├── prisma/
+│   │   ├── schema.prisma     # Database schema definition
+│   ├── routes/
+│   │   └── events.ts         # Event CRUD API routes
+│   ├── index.ts              # Main Express server entry
+│   ├── package.json
+│   └── .env                  # Backend environment variables
+│
+├── frontend/                 # Next.js + Tailwind + FullCalendar frontend
+│   ├── app/
+│   │   ├── page.tsx          # Main calendar page
+│   │   ├── components/
+│   │   │   ├── EventModal.tsx   # Modal for creating/editing events
+│   │   │   ├── Sidebar.tsx      # Upcoming events & filters
+│   │   │   └── CalendarView.tsx # FullCalendar integration
+│   ├── components/ui/        # Reusable UI components
+│   ├── lib/
+│   │   └── utils.ts          # API & helper utilities
+│   ├── public/
+│   │   └── Screenshots/      # App screenshots
+│   ├── styles/
+│   │   └── globals.css
+│   ├── package.json
+│   └── .env                  # Frontend environment variables
+│
+├── README.md
+```
+
 ## ✨ Credits
 
 - Developed by **Ayush Rawat**
 
 - Inspired by Google Calendar — built for simplicity, clarity, and performance.
 
-Info about installation, project structure, env info in backend - > 
+Info about installation, project structure, env info in backend - >

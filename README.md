@@ -171,4 +171,16 @@ Syncora/
 
 - Inspired by Google Calendar — built for simplicity, clarity, and performance.
 
-Info about installation, project structure, env info in backend - >
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!  
+If you'd like to improve Syncora:
+
+1. Fork the repository
+2. Create a new branch (`feature/new-feature`)
+3. Commit your changes
+4. Open a pull request 🚀
+
+---

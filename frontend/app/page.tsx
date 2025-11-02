@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -224,9 +226,24 @@ export default function CalendarPage() {
 
       {/* Calendar Section */}
       <section className="flex-1 p-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold text-gray-700">My Calendar</h2>
-          <p className="text-m text-gray-500">Stay organized with Syncora</p>
+        <div className="flex justify-between items-center mb-6 bg-white px-4 py-3 rounded-2xl shadow-sm">
+          <h1 className="text-3xl font-extrabold text-gray-800 flex items-center gap-3">
+            Hey User!{" "}
+            <motion.span
+              initial={{ rotate: 0 }}
+              animate={{ rotate: [0, 14, -8, 14, -4, 10, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 2 }}
+              className="text-4xl inline-block origin-bottom">
+              👋
+            </motion.span>
+          </h1>
+
+          <p className="text-base text-gray-600 font-medium tracking-wide italic">
+            Stay organized with{" "}
+            <span className="text-[#1a73e8] font-semibold not-italic">
+              Syncora
+            </span>
+          </p>
         </div>
 
         <div className="bg-white p-4 rounded-2xl shadow-md">

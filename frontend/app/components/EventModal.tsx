@@ -18,6 +18,7 @@ interface EventModalProps {
   selectedStartISO?: string;
   selectedEndISO?: string;
   eventToEdit?: any | null;
+  onDelete?: () => void; 
 }
 
 export default function EventModal({

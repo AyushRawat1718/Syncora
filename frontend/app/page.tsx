@@ -7,7 +7,8 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import EventModal from "./components/EventModal";
 import { api } from "@/lib/utils"; // ✅ correct Next.js import alias
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const BASE_URL =
+  (process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:5000") + "/api";
 
 export default function CalendarPage() {
   const [events, setEvents] = useState<any[]>([]);

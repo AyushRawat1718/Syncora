@@ -2,21 +2,60 @@ import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// ✅ Merge Tailwind + conditional classes
+/* -------------------------------------------------------
+✅ Utility: Merge Tailwind + Conditional Classes
+------------------------------------------------------- */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// ✅ Base API configuration
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+/* -------------------------------------------------------
+✅ Dynamic API Base URL
+- Uses NEXT_PUBLIC_API_URL in production
+- Falls back to localhost in dev
+- Automatically trims trailing slashes
+------------------------------------------------------- */
+const BASE_URL =
+  (process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+    "http://localhost:5000/api") + "/api";
 
+console.log("🌍 Using API Base URL:", BASE_URL);
+
+/* -------------------------------------------------------
+✅ Axios Instance (centralized config)
+- Easier to debug and modify later
+------------------------------------------------------- */
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: false, // change to true if you add auth later
+});
+
+/* -------------------------------------------------------
+✅ API Endpoints
+------------------------------------------------------- */
 export const api = {
-  getEvents: () => axios.get(`${BASE_URL}/events`),
-  getUpcomingEvents: () => axios.get(`${BASE_URL}/events/upcoming`),
-  createEvent: (data: any) => axios.post(`${BASE_URL}/events`, data),
+  // 📅 Fetch all events
+  getEvents: () => axiosInstance.get("/events"),
+
+  // 🔔 Fetch upcoming events (safe fallback if missing)
+  getUpcomingEvents: () =>
+    axiosInstance.get("/events/upcoming").catch(() => ({ data: [] })),
+
+  // ➕ Create new event
+  createEvent: (data: any) => axiosInstance.post("/events", data),
+
+  // ✏️ Update existing event
   updateEvent: (id: string, data: any) =>
-    axios.put(`${BASE_URL}/events/${id}`, data),
-  deleteEvent: (id: string) => axios.delete(`${BASE_URL}/events/${id}`),
+    axiosInstance.put(`/events/${id}`, data),
+
+  // ❌ Delete event
+  deleteEvent: (id: string) => axiosInstance.delete(`/events/${id}`),
 };
 
-console.log("📡 API Request to:", `${BASE_URL}/events`);
+/* -------------------------------------------------------
+✅ Export base URL (for debugging or external use)
+------------------------------------------------------- */
+export { BASE_URL };

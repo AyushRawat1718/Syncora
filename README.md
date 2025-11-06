@@ -3,6 +3,7 @@
 **Syncora** is a modern, fully interactive event scheduling platform inspired by _Google Calendar_.  
 Built using **Next.js**, **PostgreSQL**, and **FullCalendar**, it allows users to seamlessly create, edit, and delete events with real-time updates and persistent storage.
 
+### This project is deployed at: https://syncora-five.vercel.app/
 ---
 
 ## 🚀 Tech Stack
